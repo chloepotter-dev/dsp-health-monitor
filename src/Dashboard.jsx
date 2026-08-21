@@ -43,8 +43,10 @@ export default function Dashboard() {
   async function triggerN8nWorkflow() {
     const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
+    console.log('Target Webhook URL:', webhookUrl);
+
     if (!webhookUrl) {
-      alert('Missing VITE_N8N_WEBHOOK_URL in your .env.local file.');
+      alert('Missing VITE_N8N_WEBHOOK_URL! Please verify the environment variable is set in Vercel or your .env file.');
       return;
     }
 
@@ -64,13 +66,13 @@ export default function Dashboard() {
       });
 
       if (!response.ok) {
-        throw new Error(`Webhook returned status ${response.status}`);
+        throw new Error(`Webhook returned status ${response.status} (${response.statusText})`);
       }
 
       alert('Reconciliation pipeline successfully triggered in n8n!');
     } catch (err) {
       console.error('Error triggering n8n webhook:', err);
-      alert('Failed to reach n8n webhook endpoint. Check your workflow status.');
+      alert(`Failed to reach n8n webhook endpoint: ${err.message}`);
     } finally {
       setTriggering(false);
     }
@@ -122,7 +124,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Extra-Large Metric Grid with Hover Lift */}
+      {/* Metric Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
         
         {/* Total Reconciled */}
